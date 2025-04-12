@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'; // URL base de la API de usuarios
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-users-4ou5.onrender.com'; // URL base de la API de usuarios
 
 export interface UserData {
   id: number;
