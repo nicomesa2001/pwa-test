@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import authService, { UserData } from '@/services/authService'
 
 interface User {
-  id: string
+  id: number
   name: string
   email: string
 }
@@ -27,20 +28,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is logged in from localStorage
     const storedUser = localStorage.getItem('user')
-    const storedToken = localStorage.getItem('belvoToken')
+    const storedToken = localStorage.getItem('authToken')
     
-    if (storedUser) {
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser))
-    }
-    
-    if (storedToken) {
       setToken(storedToken)
-    } else {
-      // Set a default Belvo sandbox token for demo purposes
-      // In a real app, you would get this from your backend after authenticating with Belvo
-      const defaultToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWx2by1hcGkiLCJpc3MiOiJiZWx2byIsImlhdCI6MTUxNjIzOTAyMn0.K8YV6Uv6wXB3QwYKqoLDmSdvE1wfLBUix_p8N3Z7Yj4'
-      setToken(defaultToken)
-      localStorage.setItem('belvoToken', defaultToken)
+      
+      // Verificar si el token sigue siendo válido
+      authService.getCurrentUser(storedToken)
+        .catch(() => {
+          // Si hay un error, el token probablemente expiró
+          logout()
+        })
     }
     
     setIsLoading(false)
@@ -49,31 +48,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const authResponse = await authService.login(email, password)
       
-      // Mock authentication - in a real app, this would be an API call
-      if (email && password) {
-        const mockUser = {
-          id: '1',
-          name: email.split('@')[0],
-          email
-        }
-        setUser(mockUser)
-        localStorage.setItem('user', JSON.stringify(mockUser))
+      if (authResponse && authResponse.access_token) {
+        // Obtener información del usuario con el token
+        const userData = await authService.getCurrentUser(authResponse.access_token)
         
-        // In a real app, you would get a token from your backend after authenticating with Belvo
-        // For demo purposes, we're using a static token
-        const belvoToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWx2by1hcGkiLCJpc3MiOiJiZWx2byIsImlhdCI6MTUxNjIzOTAyMn0.K8YV6Uv6wXB3QwYKqoLDmSdvE1wfLBUix_p8N3Z7Yj4'
-        setToken(belvoToken)
-        localStorage.setItem('belvoToken', belvoToken)
+        const userObj = {
+          id: userData.id,
+          name: userData.full_name || email.split('@')[0],
+          email: userData.email
+        }
+        
+        setUser(userObj)
+        setToken(authResponse.access_token)
+        
+        localStorage.setItem('user', JSON.stringify(userObj))
+        localStorage.setItem('authToken', authResponse.access_token)
         
         setIsLoading(false)
         return true
       }
+      
       setIsLoading(false)
       return false
     } catch (error) {
+      console.error('Error en login:', error)
       setIsLoading(false)
       return false
     }
@@ -82,31 +82,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Registrar al usuario
+      const userData = await authService.register(name, email, password)
       
-      // Mock registration - in a real app, this would be an API call
-      if (name && email && password) {
-        const mockUser = {
-          id: '1',
-          name,
-          email
-        }
-        setUser(mockUser)
-        localStorage.setItem('user', JSON.stringify(mockUser))
-        
-        // In a real app, you would get a token from your backend after registering with Belvo
-        // For demo purposes, we're using a static token
-        const belvoToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWx2by1hcGkiLCJpc3MiOiJiZWx2byIsImlhdCI6MTUxNjIzOTAyMn0.K8YV6Uv6wXB3QwYKqoLDmSdvE1wfLBUix_p8N3Z7Yj4'
-        setToken(belvoToken)
-        localStorage.setItem('belvoToken', belvoToken)
-        
-        setIsLoading(false)
-        return true
+      if (userData) {
+        // Iniciar sesión automáticamente después del registro
+        return await login(email, password)
       }
+      
       setIsLoading(false)
       return false
     } catch (error) {
+      console.error('Error en registro:', error)
       setIsLoading(false)
       return false
     }
@@ -114,9 +101,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null)
-    // We're not removing the token on logout for demo purposes
-    // In a real app, you might want to invalidate the token on the server
-    // localStorage.removeItem('belvoToken')
+    setToken(null)
+    localStorage.removeItem('authToken')
     localStorage.removeItem('user')
     router.push('/login')
   }

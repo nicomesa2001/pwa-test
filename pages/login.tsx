@@ -20,11 +20,24 @@ const Login = () => {
       return
     }
     
-    const success = await login(email, password)
-    if (success) {
-      router.push('/banks')
-    } else {
-      setError('Credenciales inválidas')
+    try {
+      const success = await login(email, password)
+      if (success) {
+        router.push('/banks')
+      } else {
+        setError('Error al iniciar sesión. Por favor verifique sus credenciales.')
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 401) {
+        setError('Correo electrónico o contraseña incorrectos')
+      } else if (err.response && err.response.data && err.response.data.detail) {
+        setError(err.response.data.detail)
+      } else if (err.message && err.message.includes('Network Error')) {
+        setError('Error de conexión. Verifique que la API esté en funcionamiento.')
+      } else {
+        setError('Error al iniciar sesión. Por favor intente nuevamente.')
+      }
+      console.error('Error de login:', err)
     }
   }
 
