@@ -1,56 +1,62 @@
-<p align="center">
-	<img alt="Rice Bowl" src="public/images/icon-512.png" width="90">
-	<h2 align="center">Next PWA Template</h2>
-</p>
+# Mi Aplicación PWA
 
-<p align="center">Fluffless app template to inspire less</p>
+## 📱 Descripción
 
-<p align="center">
-	<a href="https://next-pwa-template.now.sh">Live demo</a>
-</p>
+Esta es una Progressive Web App (PWA) que permite gestionar y visualizar información bancaria de manera segura y eficiente. La aplicación está desarrollada con Next.js 13, optimizada para un rendimiento excepcional y funciona incluso sin conexión a internet.
 
-<p align="center">
-	<a href="https://web.dev/measure">
-		<img alt="100% lighthouse scores" src="https://img.shields.io/badge/lighthouse-100%25-845EF7.svg?logo=lighthouse&logoColor=white&style=flat-square" />
-	</a>
-</p>
+## ✨ Características
 
-## Features
+- 💻 Desarrollada con Next.js 13 y TypeScript
+- 🏦 Integración con múltiples bancos
+- 🔒 Autenticación segura
+- 💳 Gestión de cuentas bancarias
+- 📊 Visualización de transacciones
+- 🌓 Modo claro/oscuro
+- 📱 Experiencia PWA completa
+- 🔄 Funcionalidad offline
 
-- ✨ Fluffless PWA using Next 13
-- 🌗 Lovely night/day themes
-- 🦄 Easily removable [nice-to-haves](#use-only-what-you-need)
-- 📱 Native-like mobile experience
-- 📦 Neatly wrapped like that avocado you got for christmas
+## 🚀 Instalación
 
-## Getting started
+1. Clona el repositorio:
+```bash
+git clone [URL-del-repositorio]
+```
 
-1. [Use this template](https://github.com/mvllow/next-pwa-template/generate)
-2. Replace `public/images` with your own
-3. Enjoy ✨
+2. Instala las dependencias:
+```bash
+pnpm install
+```
 
-## Use only what you need
+3. Inicia el servidor de desarrollo:
+```bash
+pnpm dev
+```
 
-Fluffless doesn't mean "start with nothing". The goal of this template is to be an entry into maintainable apps.
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-**The essentials**
+## 🛠️ Tecnologías
 
-- Typescript, made easy with Next.js
-- [tailwindcss](https://github.com/tailwindlabs/tailwindcss) for utility-first styling
-- [next-pwa](https://github.com/shadowwalker/next-pwa) for offline support
+- Next.js 13
+- TypeScript
+- Tailwind CSS
+- next-pwa
+- next-themes
 
-**Nice to haves**
+## 📝 Scripts Disponibles
 
-- [next-themes](https://github.com/pacocoursey/next-themes) or similar for low stress theming
+- `pnpm dev` - Inicia el servidor de desarrollo
+- `pnpm build` - Construye la aplicación para producción
+- `pnpm start` - Inicia la aplicación en modo producción
+- `pnpm lint` - Ejecuta el linter
 
-## Gallery
+## 🌐 Despliegue
 
-### Desktop
+La aplicación está optimizada para ser desplegada en plataformas como Vercel o Netlify. Para construir la versión de producción:
 
-<img width="1728" alt="Rice Bowl PWA on macOS in dark mode" src="https://github.com/mvllow/next-pwa-template/assets/1474821/889bef1b-af58-4efa-b1f3-3ea021ec9760">
+```bash
+pnpm build
+```
 
-### Mobile
+## 📄 Licencia
 
-<img width="360" alt="Rice Bowl PWA on iOS in light mode" src="https://github.com/mvllow/next-pwa-template/assets/1474821/1f0fa36e-23c7-4bcf-aa6e-f447559cae62" />
-
-<img width="360" alt="Rice Bowl PWA on iOS in dark mode" src="https://github.com/mvllow/next-pwa-template/assets/1474821/2fac61d0-dc29-4022-8b39-003306f80fb4" />
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
